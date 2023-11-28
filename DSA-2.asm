@@ -95,6 +95,7 @@
 ;	4 neues Timing für ISR
 ;	5 Servospannungsversorgung nach Erreichen der Position abschaltbar
 ;	6 Abschaltung Servospannungsversorgung durch PORTC, 2
+;   7 Bugfixing
 ;
 ;**************************************************************
 ; *  Copyright (c) 2018 Michael Zimmermann <http://www.kruemelsoft.privat.t-online.de>
@@ -119,7 +120,7 @@
 ;
 ;
 
-#define VERSION_NO	.6
+#define VERSION_NO	.7
 
 ;.........................................................................
 ;--- Compiler(Hardware)-Optionen, können 0 oder 1 sein, NICHT änderbar mit ServoAnsteuerung.exe ---

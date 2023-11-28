@@ -33,7 +33,7 @@
 ;*	
 ;**************************************************************
 ;
-; M.Zimmermann 22.05.2020
+; M.Zimmermann 19.12.2020
 ;
 ;**************************************************************
 ;
@@ -816,18 +816,12 @@ writeflags:
 
 	; Statusänderung: im EEPROM merken
 	; für's nächste Power-On!
-#if INT_OSC==1
-	btfss	IBN_Modus
-#endif
 	movfw	mflags
 	movwf	cflags
 	call	write_eeprom_data
 
         movlw   eflags-eeprom_start
        	call 	write_eeprom
-#if INT_OSC==1
-	btfss	IBN_Modus
-#endif
 	return
 
 ;**************************************************************
