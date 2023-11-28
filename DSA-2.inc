@@ -20,7 +20,8 @@
 ;*	PORTC	0 In  AN4, Endlage1 links / rot
 ;*              bei internem Oszillator:
 ;*			1 Out IBN ist ein
-;*			2 Out Position wird in EEPROM geschrieben
+;*			2 In  1 = Servoabschaltung aktiv
+;*                0 = Servoabschaltung deaktiviert
 ;*              bei externer Taktquelle:
 ;*			1 Out Impulsausgang für SERVO_1
 ;*			2 Out Impulsausgang für SERVO_2
@@ -255,12 +256,12 @@ time_pow_off_c	: 1
 #endif
 
 #define POWER_ON	PORTC,7	; Output, wenn ISR bereit
+#define PWR_ON_EXT	PORTC,2 ; Input
 
 #if USE_IBN==1
   #define TA_IBN	PORTA,3	; Input
   #if INT_OSC==1
     #define LED_IBN	PORTC,1 ; Output
-    #define LED_EEPROM	PORTC,2 ; Output
   #endif
 #endif
 
@@ -431,7 +432,11 @@ Init:
 	;===> 1
 	banksel	PIE1		; select bank 1
 	movwf	TRISB
+#if INT_OSC==1
+	movlw	B'00000101'	; input = 1, output = 0
+#else
 	movlw	B'00000001'	; input = 1, output = 0
+#endif
 	movwf	TRISC
 
 	movlw	B'00001111'	; input = 1, output = 0
@@ -538,7 +543,6 @@ look_ta_ibn:
 	call	wait_debounce
   #if INT_OSC==1
 	bsf	LED_IBN
-	bcf	LED_EEPROM
   #endif
 continue_init:
 #endif
@@ -616,6 +620,9 @@ copy_flags:
 #if SWITCH_POW_OFF==1
 	btfss	PowSwitchOff ; Freigabe aus 'modus'/'ba_modus'
 	  goto	main_pow_on	; 0 = kein PowerOff
+	
+	btfss	PWR_ON_EXT ; Freigabe von PORTC,2: 1=Abschaltung aktiv, 0=keine Abschaltung
+	  goto	main_pow_on	; 0 = kein PowerOff
 	  
 	; beide Servos müssen in Endlage sein, bevor abgeschaltet wird:
 	btfss	EndPos_SV1
@@ -662,9 +669,6 @@ SetupMode:
 	btfsc	TA_IBN
 	  goto	main		; Eingang = 1 = Taste nicht gedrückt
 
-  #if INT_OSC==1
-	bsf	LED_EEPROM
-  #endif
 	; warte bis Taste losgelassen:
 	call	wait_debounce
 	
@@ -688,9 +692,6 @@ SetupMode:
    
 	call 	write_eeprom
 	call	wait_50ms
-  #if INT_OSC==1
-	bcf	LED_EEPROM
-  #endif
 #endif
 	
 	goto	main
@@ -817,7 +818,6 @@ writeflags:
 	; für's nächste Power-On!
 #if INT_OSC==1
 	btfss	IBN_Modus
-	  bsf	LED_EEPROM
 #endif
 	movfw	mflags
 	movwf	cflags
@@ -827,7 +827,6 @@ writeflags:
        	call 	write_eeprom
 #if INT_OSC==1
 	btfss	IBN_Modus
-	  bcf	LED_EEPROM
 #endif
 	return
 

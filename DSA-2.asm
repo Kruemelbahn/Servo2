@@ -21,7 +21,8 @@
 ;*	PORTC	0 In  AN4, Endlage1 links / rot
 ;*              bei internem Oszillator:
 ;*			1 Out IBN ist ein
-;*			2 Out Position wird in EEPROM geschrieben
+;*			2 In  1 = Servoabschaltung aktiv
+;*                0 = Servoabschaltung deaktiviert
 ;*              bei externer Taktquelle:
 ;*			1 Out Impulsausgang für SERVO_1
 ;*			2 Out Impulsausgang für SERVO_2
@@ -35,7 +36,7 @@
 ;
 ; Hauptdatei = DSA-2.ASM
 ;
-; M.Zimmermann 22.05.2020
+; M.Zimmermann 03.06.2020
 ;
 ; ServoAnsteuerung : einfache Ansteuerelektronik
 ;                    für bis zu zwei Servomotoren
@@ -93,6 +94,7 @@
 ;	3 keine Pullups bei invertierten Eingängen an PortB
 ;	4 neues Timing für ISR
 ;	5 Servospannungsversorgung nach Erreichen der Position abschaltbar
+;	6 Abschaltung Servospannungsversorgung durch PORTC, 2
 ;
 ;**************************************************************
 ; *  Copyright (c) 2018 Michael Zimmermann <http://www.kruemelsoft.privat.t-online.de>
@@ -117,7 +119,7 @@
 ;
 ;
 
-#define VERSION_NO	.5
+#define VERSION_NO	.6
 
 ;.........................................................................
 ;--- Compiler(Hardware)-Optionen, können 0 oder 1 sein, NICHT änderbar mit ServoAnsteuerung.exe ---
