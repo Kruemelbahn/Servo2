@@ -2,7 +2,7 @@
 
 Servo2 is the possibility, to control two Servos without digital knick-knacks.
 
-For more details please refer to the manual [wDSA Handbuch 8.pdf](https://1drv.ms/b/s!AhVEogJDmDyhnxCQM4_sRUrK3o5b), written by W.Hückel.<br>
+For more details please refer to the documentation.<br>
 
 The software [ServoAnsteuerung](https://www.github.com/Kruemelbahn/ServoAnsteuerung) can be used to change parameters in hex-file.<br>
 
